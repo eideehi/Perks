@@ -1,0 +1,13 @@
+{
+  "available": true,
+  "rarity": "COMMON",
+  "_comment": "Do not change maxRank",
+  "maxRank": "4",
+  "learningCosts": [
+    300, 300, 300, 300
+  ],
+  "usageCosts": [
+    5, 5, 5, 5
+  ],
+  "learningDifficulty": 256
+}
