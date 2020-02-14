@@ -59,7 +59,7 @@ public class PolisherAsmHooks
             if ( !player.getEntityWorld().isRemote() && player instanceof ServerPlayerEntity )
             {
                 PerkManager manager = PerkManager.of( player );
-                if ( manager.progressUnlock( POLISHER, 1.0 / 512.0 ) )
+                if ( manager.progressUnlock( POLISHER, 1.0 / POLISHER.getLearningDifficulty() ) )
                 {
                     PacketDistributor.PacketTarget target = PacketDistributor.PLAYER.with( () -> ( ServerPlayerEntity )player );
                     Networks.CHANNEL.send( target, new PerkControl.UnlockPerk( PERK_POLISHER ) );
