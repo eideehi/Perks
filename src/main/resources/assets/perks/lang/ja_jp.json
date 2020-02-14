@@ -82,5 +82,9 @@
 
   "_comment": "Key Bindings",
   "key.perks": "Perks",
-  "key.perks.open_perk_gui": "パークGUIを開く"
+  "key.perks.open_perk_gui": "パークGUIを開く",
+
+  "_comment": "Config",
+  "config.perks.perk_energy_ui_x": "パークエネルギー UI X",
+  "config.perks.perk_energy_ui_y": "パークエネルギー UI Y"
 }

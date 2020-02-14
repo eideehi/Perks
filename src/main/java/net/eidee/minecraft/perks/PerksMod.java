@@ -27,8 +27,11 @@ package net.eidee.minecraft.perks;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.eidee.minecraft.perks.settings.PerksConfig;
 
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -39,5 +42,6 @@ public class PerksMod
 
     public PerksMod()
     {
+        ModLoadingContext.get().registerConfig( ModConfig.Type.CLIENT, PerksConfig.CLIENT_SPEC );
     }
 }

@@ -82,5 +82,9 @@
 
   "_comment": "Key Bindings",
   "key.perks": "Perks",
-  "key.perks.open_perk_gui": "Open Perk GUI"
+  "key.perks.open_perk_gui": "Open Perk GUI",
+
+  "_comment": "Config",
+  "config.perks.perk_energy_ui_x": "Perk Energy UI X",
+  "config.perks.perk_energy_ui_y": "Perk Energy UI Y"
 }

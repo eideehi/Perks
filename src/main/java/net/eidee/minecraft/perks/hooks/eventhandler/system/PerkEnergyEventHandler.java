@@ -29,6 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import net.eidee.minecraft.perks.PerksMod;
 import net.eidee.minecraft.perks.capability.Capabilities;
+import net.eidee.minecraft.perks.settings.PerksConfig;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -69,9 +70,8 @@ public class PerkEnergyEventHandler
             {
                 return;
             }
-            //TODO: Make config
-            int x = 5;
-            int y = 5;
+            int x = PerksConfig.CLIENT.perkEnergyUiX.get();
+            int y = PerksConfig.CLIENT.perkEnergyUiY.get();
             player.getCapability( Capabilities.PERK_ENERGY ).ifPresent( perkEnergy -> {
                 FontRenderer fontRenderer = minecraft.fontRenderer;
                 int fontHeight = fontRenderer.FONT_HEIGHT;
