@@ -9,7 +9,7 @@ Add various Perks to Minecraft. Perk is unlocked by various actions and can be l
 
 
 ## Perk ##
-To learn Perk, operate from the dedicated GUI displayed with the "P" key.
+**To learn Perk, operate from the dedicated GUI displayed with the "P" key.**
 
 |Perk|Description|Unlock Condition|
 |----|-----------|----------------|
@@ -47,6 +47,27 @@ Recover 200 Perk Energy.
 Increases the base point of Perk Energy by 5, the increased value is lost when the player dies.
 
 <img src="https://app.box.com/shared/static/lzeyjf997l6h0jp4zwtp49x5fvnobs2a.png">
+
+
+## Command ##
+In Perks Mod, some commands are added to verify operation in Creative mode.
+
+|Name|Description|Command|
+|----|-----------|-------|
+|Unlock Perk|Instantly unlock Perk.|`/unlockPerk <target> <perk>`|
+|Perk Experience|It is possible to add and set park experience points.|`/perkExperience <query> <target> <value>`|
+|Remove Perk|You can reset the state of Perk.|`/removePerk <target> <perk>`|
+
+
+## Config ##
+
+### Client ###
+Path: **.minecraft/config/perks-client.toml**
+|Item|Description|
+|----|-----------|
+|perkEnergyUiX|Perk Energy UI display position X|
+|perkEnergyUiY|Perk Energy UI display position Y|
+
 
 
 ## Languages ##
