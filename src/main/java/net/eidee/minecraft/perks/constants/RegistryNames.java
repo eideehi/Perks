@@ -54,6 +54,8 @@ public class RegistryNames
 
     public static final String PERK_POLISHER = ( MOD_ID + ":polisher" );
 
+    public static final String ITEM_ENERGY_DRINK = ( MOD_ID + ":energy_drink" );
+
     private RegistryNames()
     {
     }

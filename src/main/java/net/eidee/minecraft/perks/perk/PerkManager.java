@@ -166,6 +166,17 @@ public class PerkManager
         perkExperience.addValue( value );
     }
 
+    public void recoverPerkEnergy( int value )
+    {
+        double currentValue = perkEnergy.getValue();
+        double newValue = Math.min( currentValue + value, perkEnergy.getMax() );
+        if ( currentValue != newValue )
+        {
+            perkEnergy.setValue( newValue );
+            perkEnergyDirty = true;
+        }
+    }
+
     public boolean progressUnlock( Perk perk, double progressValue )
     {
         PerkData data = perkStorage.getData( perk );
