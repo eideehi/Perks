@@ -56,6 +56,8 @@ public class RegistryNames
 
     public static final String ITEM_ENERGY_DRINK = ( MOD_ID + ":energy_drink" );
 
+    public static final String ITEM_ENERGY_DRINK_BLUE = ( MOD_ID + ":energy_drink_blue" );
+
     private RegistryNames()
     {
     }

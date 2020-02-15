@@ -48,7 +48,14 @@ public class ItemRegistryEventHandler
     {
         IForgeRegistry< Item > registry = event.getRegistry();
 
-        registry.register( new EnergyDrinkItem( new Item.Properties().group( ItemGroup.FOOD ) ).setRecoverValue( 200 )
-                                                                                               .setRegistryName( RegistryNames.ITEM_ENERGY_DRINK ) );
+        registry.register( new EnergyDrinkItem( new Item.Properties().group( ItemGroup.FOOD ) ).setType( EnergyDrinkItem.Type.RECOVER )
+                                                                                               .setValue( 200 )
+                                                                                               .setRegistryName(
+                                                                                                   RegistryNames.ITEM_ENERGY_DRINK ) );
+
+        registry.register( new EnergyDrinkItem( new Item.Properties().group( ItemGroup.FOOD ) ).setType( EnergyDrinkItem.Type.BASE_UP )
+                                                                                               .setValue( 5 )
+                                                                                               .setRegistryName(
+                                                                                                   RegistryNames.ITEM_ENERGY_DRINK_BLUE ) );
     }
 }

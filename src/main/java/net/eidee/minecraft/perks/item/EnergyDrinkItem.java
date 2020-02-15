@@ -46,22 +46,29 @@ import net.minecraft.world.World;
 public class EnergyDrinkItem
     extends Item
 {
-    private int recoverValue;
+    private Type type;
+    private int value;
 
     public EnergyDrinkItem( Properties properties )
     {
         super( properties );
     }
 
-    public EnergyDrinkItem setRecoverValue( int recoverValue )
+    public EnergyDrinkItem setType( Type type )
     {
-        this.recoverValue = recoverValue;
+        this.type = type;
         return this;
     }
 
-    public int getRecoverValue()
+    public EnergyDrinkItem setValue( int value )
     {
-        return recoverValue;
+        this.value = value;
+        return this;
+    }
+
+    public int getValue()
+    {
+        return value;
     }
 
     @Override
@@ -75,7 +82,14 @@ public class EnergyDrinkItem
                 CriteriaTriggers.CONSUME_ITEM.trigger( ( ServerPlayerEntity )player, p_77654_1_ );
             }
 
-            PerkManager.of( player ).recoverPerkEnergy( recoverValue );
+            if ( type == Type.RECOVER )
+            {
+                PerkManager.of( player ).recoverPerkEnergy( value );
+            }
+            else
+            {
+                PerkManager.of( player ).addPerkEnergyBase( false, value );
+            }
 
             player.addStat( Stats.ITEM_USED.get( this ) );
             if ( !player.abilities.isCreativeMode )
@@ -103,5 +117,11 @@ public class EnergyDrinkItem
     {
         p_77659_2_.setActiveHand( p_77659_3_ );
         return ActionResult.func_226248_a_( p_77659_2_.getHeldItem( p_77659_3_ ) );
+    }
+
+    public enum Type
+    {
+        RECOVER,
+        BASE_UP
     }
 }

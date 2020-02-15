@@ -166,6 +166,12 @@ public class PerkManager
         perkExperience.addValue( value );
     }
 
+    public void addPerkEnergyBase( boolean permanent, double value )
+    {
+        PerkEnergy.BasePoint basePoint = new PerkEnergy.BasePoint( permanent, value );
+        perkEnergy.addBasePoint( basePoint );
+    }
+
     public void recoverPerkEnergy( int value )
     {
         double currentValue = perkEnergy.getValue();
