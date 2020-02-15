@@ -3,8 +3,10 @@
 ## NOTE ##
 **This Mod is currently under development and may undergo significant changes and is not recommended for deployment on important save data.**
 
+
 ## Outline ##
-Add various Perks to Minecraft. Perk is unlocked by various actions and can be learned by consuming Perk Experience(PXP). Once you learn Perk, you can use it by consuming Perk Energy(PE).
+Add various Perks to Minecraft. Perk is unlocked by various actions and can be learned by consuming Perk Experience (PXP). Once you learn Perk, you can use it by consuming Perk Energy (PE).
+
 
 ## Perk ##
 To learn Perk, operate from the dedicated GUI displayed with the "P" key.
@@ -24,12 +26,28 @@ To learn Perk, operate from the dedicated GUI displayed with the "P" key.
 |Seeder|If you have seeds or crops in your hands that you can plant, except pumpkins and watermelons, you can plant them automatically on the farmland.|<details>Plant 512 seeds or crops.</details>|
 |Spreader|If you have bone meal in your hand, it will be automatically used for crop.|<details>Use 512 bone meals.</details>|
 
+
 ## Perk Energy (PE) ##
 Perk Energy is the energy required to use Perk, and the UI appears in the upper left corner of the screen. Energy recovers over time.
 Also, the energy will increase or decrease depending on the unlocking of the perk and the level of the player.
 
+
 ## Perk Experience (PXP) ##
-The Perk Experience is required when learning Perk. Currently, PXP rises by getting the normal experience orb.
+The Perk Experience is required when learning Perk. Currently, Perk Experience rises by getting the normal experience orb.
+
+
+## Item ##
+
+### Energy Drink ###
+Recover 200 Perk Energy.
+
+<img src="https://app.box.com/shared/static/rontsnhtei115vkg5j2fnotpnszxu0qi.png">
+
+### Energy Drink Blue ###
+Increases the base point of Perk Energy by 5, the increased value is lost when the player dies.
+
+<img src="https://app.box.com/shared/static/lzeyjf997l6h0jp4zwtp49x5fvnobs2a.png">
+
 
 ## Languages ##
 
