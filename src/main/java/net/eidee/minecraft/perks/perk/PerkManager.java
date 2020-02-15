@@ -115,7 +115,7 @@ public class PerkManager
                 double energyValue = perkEnergy.getValue();
                 if ( energyValue >= usageCost )
                 {
-                    if ( !simulation )
+                    if ( !simulation && !player.abilities.isCreativeMode )
                     {
                         perkEnergy.setValue( energyValue - usageCost );
                         perkEnergyDirty = true;
