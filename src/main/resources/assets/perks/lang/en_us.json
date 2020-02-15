@@ -1,4 +1,8 @@
 {
+  "_comment": "Items",
+  "item.perks.energy_drink": "Energy Drink",
+  "item.perks.energy_drink_blue": "Energy Drink Blue",
+
   "_comment": "Perks",
   "perk.perks.economy": "Economy",
   "perk.perks.economy.description.1": "Reduces Perk usage costs by 10 percent.",

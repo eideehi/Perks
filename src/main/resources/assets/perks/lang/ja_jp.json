@@ -1,4 +1,8 @@
 {
+  "_comment": "Items",
+  "item.perks.energy_drink": "エナジードリンク",
+  "item.perks.energy_drink_blue": "エナジードリンク 青",
+
   "_comment": "Perks",
   "perk.perks.economy": "倹約家",
   "perk.perks.economy.description.1": "パークの使用コストが10パーセント減少します",
