@@ -31,8 +31,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.google.gson.GsonBuilder;
@@ -54,6 +56,56 @@ import net.minecraftforge.registries.IForgeRegistry;
 @Mod.EventBusSubscriber( modid = PerksMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD )
 public class PerkRegistryEventHandler
 {
+    public static void register( IForgeRegistry< Perk > registry, ResourceLocation registryName )
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter( Perk.class, Perk.DESERIALIZER );
+        URI uri;
+        {
+            String path = ( "definitions/" +
+                            registryName.getNamespace() +
+                            "/perk/" +
+                            registryName.getPath() +
+                            ".json" );
+            File file = new File( Minecraft.getInstance().gameDir, path );
+            if ( file.isFile() && file.canRead() )
+            {
+                uri = file.toURI();
+            }
+            else
+            {
+                try
+                {
+                    URL resource = PerksMod.class.getClassLoader().getResource( path );
+                    if ( resource == null )
+                    {
+                        throw new RuntimeException( String.format( "Perk file not found. %s", path ) );
+                    }
+                    uri = resource.toURI();
+                    if ( !uri.getScheme().equalsIgnoreCase( "file" ) )
+                    {
+                        PerksMod.getLogger().warn( "Scheme is not file: {}", uri.getScheme() );
+                        return;
+                    }
+                }
+                catch ( URISyntaxException e )
+                {
+                    throw new RuntimeException( e );
+                }
+            }
+        }
+        try
+        {
+            PerksMod.getLogger().debug( "Load a perk-file: {}", uri );
+            BufferedReader reader = Files.newBufferedReader( Paths.get( uri ), StandardCharsets.UTF_8 );
+            Perk perk = gsonBuilder.create().fromJson( reader, Perk.class );
+            registry.register( perk.setRegistryName( registryName ) );
+        }
+        catch ( IOException | FileSystemNotFoundException ignored )
+        {
+            throw new RuntimeException( String.format( "Parsing of the Perl file failed. %s", uri.toString() ) );
+        }
+    }
+
     @SubscribeEvent
     public static void newRegistry( RegistryEvent.NewRegistry event )
     {
@@ -64,62 +116,22 @@ public class PerkRegistryEventHandler
     public static void registerPerk( RegistryEvent.Register< Perk > event )
     {
         IForgeRegistry< Perk > registry = event.getRegistry();
-
-        String[] registryNames = {
-            RegistryNames.PERK_ECONOMY,
-            RegistryNames.PERK_INTELLIGENCE,
-            RegistryNames.PERK_IRON_FIST,
-            RegistryNames.PERK_CULTIVATOR,
-            RegistryNames.PERK_SEEDER,
-            RegistryNames.PERK_SPREADER,
-            RegistryNames.PERK_HARVESTER,
-            RegistryNames.PERK_FURNACEMAN,
-            RegistryNames.PERK_RESIDENT_OF_END,
-            RegistryNames.PERK_BREEDER,
-            RegistryNames.PERK_FEEDER,
-            RegistryNames.PERK_OBSIDIAN_BREAKER,
-            RegistryNames.PERK_POLISHER
-        };
-        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter( Perk.class, Perk.DESERIALIZER );
-        for ( String registryName : registryNames )
+        Stream.of( RegistryNames.PERK_ECONOMY,
+                   RegistryNames.PERK_INTELLIGENCE,
+                   RegistryNames.PERK_IRON_FIST,
+                   RegistryNames.PERK_CULTIVATOR,
+                   RegistryNames.PERK_SEEDER,
+                   RegistryNames.PERK_SPREADER,
+                   RegistryNames.PERK_HARVESTER,
+                   RegistryNames.PERK_FURNACEMAN,
+                   RegistryNames.PERK_RESIDENT_OF_END,
+                   RegistryNames.PERK_BREEDER,
+                   RegistryNames.PERK_FEEDER,
+                   RegistryNames.PERK_OBSIDIAN_BREAKER,
+                   RegistryNames.PERK_POLISHER ).map( ResourceLocation::new ).forEach( x -> register( registry, x ) );
+        if ( registry.isEmpty() )
         {
-            ResourceLocation key = new ResourceLocation( registryName );
-
-            URI uri;
-            {
-                String path = ( "definitions/" + key.getNamespace() + "/perk/" + key.getPath() + ".json" );
-                File file = new File( Minecraft.getInstance().gameDir, path );
-                if ( file.isFile() && file.canRead() )
-                {
-                    uri = file.toURI();
-                }
-                else
-                {
-                    try
-                    {
-                        URL resource = PerksMod.class.getClassLoader().getResource( path );
-                        if ( resource == null )
-                        {
-                            throw new RuntimeException( String.format( "Perk file not found. %s", path ) );
-                        }
-                        uri = resource.toURI();
-                    }
-                    catch ( URISyntaxException e )
-                    {
-                        throw new RuntimeException( e );
-                    }
-                }
-            }
-            try
-            {
-                BufferedReader reader = Files.newBufferedReader( Paths.get( uri ), StandardCharsets.UTF_8 );
-                Perk perk = gsonBuilder.create().fromJson( reader, Perk.class );
-                registry.register( perk.setRegistryName( registryName ) );
-            }
-            catch ( IOException ignored )
-            {
-                throw new RuntimeException( String.format( "Parsing of the Perl file failed. %s", uri.toString() ) );
-            }
+            throw new RuntimeException( "Register< Perk > is empty." );
         }
     }
 }

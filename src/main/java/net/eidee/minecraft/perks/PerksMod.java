@@ -26,6 +26,8 @@ package net.eidee.minecraft.perks;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import mcp.MethodsReturnNonnullByDefault;
 import net.eidee.minecraft.perks.settings.PerksConfig;
 
@@ -38,10 +40,17 @@ import net.minecraftforge.fml.config.ModConfig;
 @Mod( PerksMod.MOD_ID )
 public class PerksMod
 {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public static final String MOD_ID = "perks";
 
     public PerksMod()
     {
         ModLoadingContext.get().registerConfig( ModConfig.Type.CLIENT, PerksConfig.CLIENT_SPEC );
+    }
+
+    public static Logger getLogger()
+    {
+        return LOGGER;
     }
 }
