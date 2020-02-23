@@ -31,8 +31,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -49,6 +49,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.LibraryFinder;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @MethodsReturnNonnullByDefault
@@ -59,32 +60,36 @@ public class PerkRegistryEventHandler
     public static void register( IForgeRegistry< Perk > registry, ResourceLocation registryName )
     {
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter( Perk.class, Perk.DESERIALIZER );
-        URI uri;
+        Path path;
         {
-            String path = ( "definitions/" +
-                            registryName.getNamespace() +
-                            "/perk/" +
-                            registryName.getPath() +
-                            ".json" );
-            File file = new File( Minecraft.getInstance().gameDir, path );
+            String resourceName = ( "definitions/" +
+                                    registryName.getNamespace() +
+                                    "/perk/" +
+                                    registryName.getPath() +
+                                    ".json" );
+            File file = new File( Minecraft.getInstance().gameDir, resourceName );
             if ( file.isFile() && file.canRead() )
             {
-                uri = file.toURI();
+                path = Paths.get( file.toURI() );
             }
             else
             {
                 try
                 {
-                    URL resource = PerksMod.class.getClassLoader().getResource( path );
+                    URL resource = PerksMod.class.getClassLoader().getResource( resourceName );
                     if ( resource == null )
                     {
-                        throw new RuntimeException( String.format( "Perk file not found. %s", path ) );
+                        throw new RuntimeException( String.format( "Perk file not found. %s", resourceName ) );
                     }
-                    uri = resource.toURI();
-                    if ( !uri.getScheme().equalsIgnoreCase( "file" ) )
+                    URI uri = resource.toURI();
+                    if ( uri.getScheme().equalsIgnoreCase( "file" ) )
                     {
-                        PerksMod.getLogger().warn( "Scheme is not file: {}", uri.getScheme() );
-                        return;
+                        path = Paths.get( uri );
+                    }
+                    else
+                    {
+                        PerksMod.getLogger().warn( "Scheme is not file: {}", uri );
+                        path = LibraryFinder.findJarPathFor( resourceName, "perks", resource );
                     }
                 }
                 catch ( URISyntaxException e )
@@ -95,14 +100,14 @@ public class PerkRegistryEventHandler
         }
         try
         {
-            PerksMod.getLogger().debug( "Load a perk-file: {}", uri );
-            BufferedReader reader = Files.newBufferedReader( Paths.get( uri ), StandardCharsets.UTF_8 );
+            PerksMod.getLogger().info( "Load a perk-file: {}", path );
+            BufferedReader reader = Files.newBufferedReader( path, StandardCharsets.UTF_8 );
             Perk perk = gsonBuilder.create().fromJson( reader, Perk.class );
             registry.register( perk.setRegistryName( registryName ) );
         }
-        catch ( IOException | FileSystemNotFoundException ignored )
+        catch ( IOException ignored )
         {
-            throw new RuntimeException( String.format( "Parsing of the Perl file failed. %s", uri.toString() ) );
+            throw new RuntimeException( String.format( "Parsing of the Perk file failed. %s", path ) );
         }
     }
 
