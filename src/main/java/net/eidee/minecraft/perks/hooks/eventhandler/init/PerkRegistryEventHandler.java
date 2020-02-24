@@ -27,14 +27,10 @@ package net.eidee.minecraft.perks.hooks.eventhandler.init;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.google.gson.GsonBuilder;
@@ -48,8 +44,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.LibraryFinder;
+import net.minecraftforge.fml.loading.moddiscovery.ModFile;
+import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @MethodsReturnNonnullByDefault
@@ -57,58 +55,9 @@ import net.minecraftforge.registries.IForgeRegistry;
 @Mod.EventBusSubscriber( modid = PerksMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD )
 public class PerkRegistryEventHandler
 {
-    public static void register( IForgeRegistry< Perk > registry, ResourceLocation registryName )
+    public static String getPerkFileName( ResourceLocation registryName )
     {
-        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter( Perk.class, Perk.DESERIALIZER );
-        Path path;
-        {
-            String resourceName = ( "definitions/" +
-                                    registryName.getNamespace() +
-                                    "/perk/" +
-                                    registryName.getPath() +
-                                    ".json" );
-            File file = new File( Minecraft.getInstance().gameDir, resourceName );
-            if ( file.isFile() && file.canRead() )
-            {
-                path = Paths.get( file.toURI() );
-            }
-            else
-            {
-                try
-                {
-                    URL resource = PerksMod.class.getClassLoader().getResource( resourceName );
-                    if ( resource == null )
-                    {
-                        throw new RuntimeException( String.format( "Perk file not found. %s", resourceName ) );
-                    }
-                    URI uri = resource.toURI();
-                    if ( uri.getScheme().equalsIgnoreCase( "file" ) )
-                    {
-                        path = Paths.get( uri );
-                    }
-                    else
-                    {
-                        PerksMod.getLogger().warn( "Scheme is not file: {}", uri );
-                        path = LibraryFinder.findJarPathFor( resourceName, "perks", resource );
-                    }
-                }
-                catch ( URISyntaxException e )
-                {
-                    throw new RuntimeException( e );
-                }
-            }
-        }
-        try
-        {
-            PerksMod.getLogger().info( "Load a perk-file: {}", path );
-            BufferedReader reader = Files.newBufferedReader( path, StandardCharsets.UTF_8 );
-            Perk perk = gsonBuilder.create().fromJson( reader, Perk.class );
-            registry.register( perk.setRegistryName( registryName ) );
-        }
-        catch ( IOException ignored )
-        {
-            throw new RuntimeException( String.format( "Parsing of the Perk file failed. %s", path ) );
-        }
+        return ( "definitions/" + registryName.getNamespace() + "/perk/" + registryName.getPath() + ".json" );
     }
 
     @SubscribeEvent
@@ -121,19 +70,67 @@ public class PerkRegistryEventHandler
     public static void registerPerk( RegistryEvent.Register< Perk > event )
     {
         IForgeRegistry< Perk > registry = event.getRegistry();
-        Stream.of( RegistryNames.PERK_ECONOMY,
-                   RegistryNames.PERK_INTELLIGENCE,
-                   RegistryNames.PERK_IRON_FIST,
-                   RegistryNames.PERK_CULTIVATOR,
-                   RegistryNames.PERK_SEEDER,
-                   RegistryNames.PERK_SPREADER,
-                   RegistryNames.PERK_HARVESTER,
-                   RegistryNames.PERK_FURNACEMAN,
-                   RegistryNames.PERK_RESIDENT_OF_END,
-                   RegistryNames.PERK_BREEDER,
-                   RegistryNames.PERK_FEEDER,
-                   RegistryNames.PERK_OBSIDIAN_BREAKER,
-                   RegistryNames.PERK_POLISHER ).map( ResourceLocation::new ).forEach( x -> register( registry, x ) );
+
+        String[] registryNames = { RegistryNames.PERK_ECONOMY,
+                                   RegistryNames.PERK_INTELLIGENCE,
+                                   RegistryNames.PERK_IRON_FIST,
+                                   RegistryNames.PERK_CULTIVATOR,
+                                   RegistryNames.PERK_SEEDER,
+                                   RegistryNames.PERK_SPREADER,
+                                   RegistryNames.PERK_HARVESTER,
+                                   RegistryNames.PERK_FURNACEMAN,
+                                   RegistryNames.PERK_RESIDENT_OF_END,
+                                   RegistryNames.PERK_BREEDER,
+                                   RegistryNames.PERK_FEEDER,
+                                   RegistryNames.PERK_OBSIDIAN_BREAKER,
+                                   RegistryNames.PERK_POLISHER
+        };
+
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter( Perk.class, Perk.DESERIALIZER );
+        for ( String registryName : registryNames )
+        {
+            PerksMod.getLogger().info( "Find perk-file for {}", registryName );
+            String resourceName = getPerkFileName( new ResourceLocation( registryName ) );
+            Path path;
+            {
+                File file = new File( Minecraft.getInstance().gameDir, resourceName );
+                if ( file.isFile() && file.canRead() )
+                {
+                    path = Paths.get( file.toURI() );
+                }
+                else
+                {
+                    ModFileInfo info = ModList.get().getModFileById( PerksMod.MOD_ID );
+                    if ( info != null )
+                    {
+                        ModFile modFile = info.getFile();
+                        path = modFile.getLocator().findPath( modFile, resourceName );
+                    }
+                    else
+                    {
+                        PerksMod.getLogger().warn( "ModFile is not found: {}", PerksMod.MOD_ID );
+                        path = null;
+                    }
+                }
+            }
+            if ( path == null )
+            {
+                PerksMod.getLogger().error( "Perk-file is not found: {}", registryName );
+                throw new RuntimeException( "Perk-file is not found" );
+            }
+            try
+            {
+                PerksMod.getLogger().info( "Load a perk-file: {}", path );
+                BufferedReader reader = Files.newBufferedReader( path, StandardCharsets.UTF_8 );
+                Perk perk = gsonBuilder.create().fromJson( reader, Perk.class );
+                registry.register( perk.setRegistryName( registryName ) );
+            }
+            catch ( IOException ignored )
+            {
+                throw new RuntimeException( String.format( "Parsing of the perk-file failed. %s", path ) );
+            }
+        }
+
         if ( registry.isEmpty() )
         {
             throw new RuntimeException( "Register< Perk > is empty." );
