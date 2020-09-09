@@ -34,7 +34,7 @@ function initializeCoreMod()
     var cookTimeTotal = ASMAPI.mapField( "field_214021_m" );
 
     return {
-        "Furnaceman_01": {
+        "perks:AbstractFurnaceTileEntity.tick": {
             "target": {
                 "type": "METHOD",
                 "class": "net.minecraft.tileentity.AbstractFurnaceTileEntity",
@@ -48,7 +48,7 @@ function initializeCoreMod()
                 |       ...
                 |       if (this.isBurning() && this.canSmelt(irecipe)) {
                 |           ++this.cookTime;
-                | +         this.cookTime = net.eidee.minecraft.perks.hooks.asm.FurnacemanAsmHooks.calcCookTime(this, this.cookTime, this.cookTimeTotal);
+                | +         this.cookTime = net.eidee.minecraft.perks.asm.FurnacemanHooks.getCookTime(this, this.cookTime, this.cookTimeTotal);
                 |           if (this.cookTime == this.cookTimeTotal) {
                 |       ...
                  */
@@ -85,32 +85,24 @@ function initializeCoreMod()
                         new VarInsnNode( Opcodes.ALOAD, 0 ),
                         new VarInsnNode( Opcodes.ALOAD, 0 ),
                         new VarInsnNode( Opcodes.ALOAD, 0 ),
-                        new FieldInsnNode(
-                            Opcodes.GETFIELD,
-                            "net/minecraft/tileentity/AbstractFurnaceTileEntity",
-                            cookTime,
-                            "I"
-                        ),
+                        new FieldInsnNode( Opcodes.GETFIELD,
+                                           "net/minecraft/tileentity/AbstractFurnaceTileEntity",
+                                           cookTime,
+                                           "I" ),
                         new VarInsnNode( Opcodes.ALOAD, 0 ),
-                        new FieldInsnNode(
-                            Opcodes.GETFIELD,
-                            "net/minecraft/tileentity/AbstractFurnaceTileEntity",
-                            cookTimeTotal,
-                            "I"
-                        ),
-                        new MethodInsnNode(
-                            Opcodes.INVOKESTATIC,
-                            "net/eidee/minecraft/perks/hooks/asm/FurnacemanAsmHooks",
-                            "calcCookTime",
-                            "(Lnet/minecraft/tileentity/TileEntity;II)I",
-                            false
-                        ),
-                        new FieldInsnNode(
-                            Opcodes.PUTFIELD,
-                            "net/minecraft/tileentity/AbstractFurnaceTileEntity",
-                            cookTime,
-                            "I"
-                        )
+                        new FieldInsnNode( Opcodes.GETFIELD,
+                                           "net/minecraft/tileentity/AbstractFurnaceTileEntity",
+                                           cookTimeTotal,
+                                           "I" ),
+                        new MethodInsnNode( Opcodes.INVOKESTATIC,
+                                            "net/eidee/minecraft/perks/asm/FurnacemanHooks",
+                                            "getCookTime",
+                                            "(Lnet/minecraft/tileentity/TileEntity;II)I",
+                                            false ),
+                        new FieldInsnNode( Opcodes.PUTFIELD,
+                                           "net/minecraft/tileentity/AbstractFurnaceTileEntity",
+                                           cookTime,
+                                           "I" )
                     ) );
                     break;
                 }

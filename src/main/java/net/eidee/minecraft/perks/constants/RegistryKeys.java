@@ -38,7 +38,9 @@ public class RegistryKeys
 
     public static final ResourceLocation PERK_EXPERIENCE = new ResourceLocation( MOD_ID, "perk_experience" );
 
-    public static final ResourceLocation PERK_STORAGE = new ResourceLocation( MOD_ID, "perk_storage" );
+    public static final ResourceLocation PERK_DATA = new ResourceLocation( MOD_ID, "perk_storage" );
+
+    public static final ResourceLocation PERK_EXTRA_DATA = new ResourceLocation( MOD_ID, "perk_extra_data" );
 
     private RegistryKeys()
     {

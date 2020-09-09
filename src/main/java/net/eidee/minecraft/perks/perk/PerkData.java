@@ -1,27 +1,3 @@
-/*
- * MIT License
- *
- * Copyright (c) 2020 EideeHi
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 package net.eidee.minecraft.perks.perk;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,12 +10,14 @@ import net.minecraft.nbt.CompoundNBT;
 @ParametersAreNonnullByDefault
 public class PerkData
 {
-    private double unlockProgress;
-    private int learnedMaxRank;
-    private int rank;
-    private boolean enabled;
+    public static final PerkData EMPTY = new PerkData( 0, 0, 0, false );
 
-    private PerkData( double unlockProgress, int learnedMaxRank, int rank, boolean enabled )
+    private final double unlockProgress;
+    private final int learnedMaxRank;
+    private final int rank;
+    private final boolean enabled;
+
+    public PerkData( double unlockProgress, int learnedMaxRank, int rank, boolean enabled )
     {
         this.unlockProgress = unlockProgress;
         this.learnedMaxRank = learnedMaxRank;
@@ -47,24 +25,22 @@ public class PerkData
         this.enabled = enabled;
     }
 
-    void setUnlockProgress( double unlockProgress )
+    public static CompoundNBT toNBT( PerkData data )
     {
-        this.unlockProgress = unlockProgress;
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putDouble( "UnlockProgress", data.getUnlockProgress() );
+        nbt.putInt( "LearnedMaxRank", data.getLearnedMaxRank() );
+        nbt.putInt( "Rank", data.getRank() );
+        nbt.putBoolean( "Enabled", data.isEnabled() );
+        return nbt;
     }
 
-    void setLearnedMaxRank( int learnedMaxRank )
+    public static PerkData fromNBT( CompoundNBT nbt )
     {
-        this.learnedMaxRank = learnedMaxRank;
-    }
-
-    void setRank( int rank )
-    {
-        this.rank = rank;
-    }
-
-    void setEnabled( boolean enabled )
-    {
-        this.enabled = enabled;
+        return new PerkData( nbt.getDouble( "UnlockProgress" ),
+                             nbt.getInt( "LearnedMaxRank" ),
+                             nbt.getInt( "Rank" ),
+                             nbt.getBoolean( "Enabled" ) );
     }
 
     public double getUnlockProgress()
@@ -89,34 +65,51 @@ public class PerkData
 
     public boolean isUnlocked()
     {
-        return unlockProgress >= 1.0;
+        return unlockProgress >= 1;
     }
 
     public boolean isLearned()
     {
-        return learnedMaxRank > 0;
+        return isUnlocked() && learnedMaxRank > 0;
     }
 
-    public static PerkData createDefault()
+    public boolean isReady()
     {
-        return new PerkData( 0.0, 0, 0, true );
+        return isLearned() && enabled;
     }
 
-    public static CompoundNBT toNBT( PerkData data )
+    public PerkData withUnlockProgress( double unlockProgress )
     {
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.putDouble( "UnlockProgress", data.getUnlockProgress() );
-        nbt.putInt( "LearnedMaxRank", data.getLearnedMaxRank() );
-        nbt.putInt( "Rank", data.getRank() );
-        nbt.putBoolean( "Enabled", data.isEnabled() );
-        return nbt;
+        return new PerkData( unlockProgress, this.learnedMaxRank, this.rank, this.enabled );
     }
 
-    public static PerkData fromNBT( CompoundNBT nbt )
+    public PerkData withLearnedMaxRank( int learnedMaxRank )
     {
-        return new PerkData( nbt.getDouble( "UnlockProgress" ),
-                             nbt.getInt( "LearnedMaxRank" ),
-                             nbt.getInt( "Rank" ),
-                             nbt.getBoolean( "Enabled" ) );
+        return new PerkData( this.unlockProgress, learnedMaxRank, this.rank, this.enabled );
+    }
+
+    public PerkData withRank( int rank )
+    {
+        return new PerkData( this.unlockProgress, this.learnedMaxRank, rank, this.enabled );
+    }
+
+    public PerkData withEnabled( boolean enabled )
+    {
+        return new PerkData( this.unlockProgress, this.learnedMaxRank, this.rank, enabled );
+    }
+
+    @Override
+    public String toString()
+    {
+        return "PerkData{" +
+               "unlockProgress=" +
+               unlockProgress +
+               ", learnedMaxRank=" +
+               learnedMaxRank +
+               ", rank=" +
+               rank +
+               ", enabled=" +
+               enabled +
+               '}';
     }
 }

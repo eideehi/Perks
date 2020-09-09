@@ -35,7 +35,7 @@ function initializeCoreMod()
     var getBoolean = ASMAPI.mapMethod( "func_223586_b" );
 
     return {
-        "ResidentOfEnd_01": {
+        "perks:ChorusFruitItem.onItemUseFinish": {
             "target": {
                 "type": "METHOD",
                 "class": "net.minecraft.item.ChorusFruitItem",
@@ -45,11 +45,11 @@ function initializeCoreMod()
             "transformer": function ( methodNode )
             {
                 /*
-                |   public ItemStack onItemUseFinish(ItemStack p_77654_1_, World p_77654_2_, LivingEntity p_77654_3_) {
-                |       ItemStack lvt_4_1_ = super.onItemUseFinish(p_77654_1_, p_77654_2_, p_77654_3_);
-                | -     if (!p_77654_2_.isRemote) {
-                | +     if (!p_77654_2_.isRemote && !net.eidee.minecraft.perks.hooks.asm.ResidentOfEndAsmHooks.suppressTeleport(p_77654_2_, p_77654_3_)) {
-                |           double lvt_5_1_ = p_77654_3_.func_226277_ct_();
+                |   public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
+                |       ItemStack itemstack = super.onItemUseFinish(stack, worldIn, entityLiving);
+                | -     if (!worldIn.isRemote) {
+                | +     if (!worldIn.isRemote && !net.eidee.minecraft.perks.asm.ResidentOfEndHooks.suppressTeleport(entityLiving)) {
+                |           double d0 = entityLiving.getPosX();
                 |       ...
                  */
                 var instructions = methodNode.instructions;
@@ -78,7 +78,7 @@ function initializeCoreMod()
                         new VarInsnNode( Opcodes.ALOAD, 3 ),
                         new MethodInsnNode(
                             Opcodes.INVOKESTATIC,
-                            "net/eidee/minecraft/perks/hooks/asm/ResidentOfEndAsmHooks",
+                            "net/eidee/minecraft/perks/asm/ResidentOfEndHooks",
                             "suppressTeleport",
                             "(Lnet/minecraft/entity/LivingEntity;)Z",
                             false
@@ -93,7 +93,7 @@ function initializeCoreMod()
                 return methodNode;
             }
         },
-        "ResidentOfEnd_02": {
+        "perks:EnderPearlEntity.onImpact": {
             "target": {
                 "type": "METHOD",
                 "class": "net.minecraft.entity.item.EnderPearlEntity",
@@ -105,10 +105,10 @@ function initializeCoreMod()
                 /*
                 |   protected void onImpact(RayTraceResult result) {
                 |       ...
-                |       net.minecraftforge.event.entity.living.EnderTeleportEvent event = new net.minecraftforge.event.entity.living.EnderTeleportEvent(serverplayerentity, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), 5.0F);
+                |       net.minecraftforge.event.entity.living.EnderTeleportEvent event = new net.minecraftforge.event.entity.living.EnderTeleportEvent(serverplayerentity, this.getPosX(), this.getPosY(), this.getPosZ(), 5.0F);
                 |       if (!net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event)) { // Don't indent to lower patch size
                 | -     if (this.rand.nextFloat() < 0.05F && this.world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING)) {
-                | +     if (this.rand.nextFloat() < 0.05F && this.world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING) && !net.eidee.minecraft.perks.hooks.asm.ResidentOfEndAsmHooks.suppressEndermiteSpawn(serverplayerentity)) {
+                | +     if (this.rand.nextFloat() < 0.05F && this.world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING) && !net.eidee.minecraft.perks.asm.ResidentOfEndHooks.suppressEndermiteSpawn(serverplayerentity)) {
                 |           EndermiteEntity endermiteentity = EntityType.ENDERMITE.create(this.world);
                 |       ...
                  */
@@ -174,7 +174,7 @@ function initializeCoreMod()
                         new VarInsnNode( Opcodes.ALOAD, 3 ),
                         new MethodInsnNode(
                             Opcodes.INVOKESTATIC,
-                            "net/eidee/minecraft/perks/hooks/asm/ResidentOfEndAsmHooks",
+                            "net/eidee/minecraft/perks/asm/ResidentOfEndHooks",
                             "suppressEndermiteSpawn",
                             "(Lnet/minecraft/entity/player/PlayerEntity;)Z",
                             false

@@ -24,48 +24,29 @@
 
 package net.eidee.minecraft.perks.capability;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import net.eidee.minecraft.perks.perk.PerkDataHandler;
+import net.eidee.minecraft.perks.perk.PerkEnergyHandler;
+import net.eidee.minecraft.perks.perk.PerkExperienceHandler;
+import net.eidee.minecraft.perks.perk.PerkExtraDataHandler;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.eidee.minecraft.perks.PerksMod;
-import net.eidee.minecraft.perks.perk.PerkEnergy;
-import net.eidee.minecraft.perks.perk.PerkExperience;
-import net.eidee.minecraft.perks.perk.PerkStorage;
-
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-@Mod.EventBusSubscriber( modid = PerksMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD )
 public class Capabilities
 {
-    @CapabilityInject( PerkEnergy.class )
-    public static Capability< PerkEnergy > PERK_ENERGY;
+    @CapabilityInject( PerkEnergyHandler.class )
+    public static Capability< PerkEnergyHandler > PERK_ENERGY;
 
-    @CapabilityInject( PerkExperience.class )
-    public static Capability< PerkExperience > PERK_EXPERIENCE;
+    @CapabilityInject( PerkExperienceHandler.class )
+    public static Capability< PerkExperienceHandler > PERK_EXPERIENCE;
 
-    @CapabilityInject( PerkStorage.class )
-    public static Capability< PerkStorage > PERK_STORAGE;
+    @CapabilityInject( PerkDataHandler.class )
+    public static Capability< PerkDataHandler > PERK_DATA;
+
+    @CapabilityInject( PerkExtraDataHandler.class )
+    public static Capability< PerkExtraDataHandler > PERK_EXTRA_DATA;
 
     private Capabilities()
     {
-    }
-
-    @SubscribeEvent
-    public static void setupCommon( FMLCommonSetupEvent event )
-    {
-        CapabilityManager instance = CapabilityManager.INSTANCE;
-        instance.register( PerkEnergy.class, BasicStorage.create( CompoundNBT.class ), PerkEnergy::new );
-        instance.register( PerkExperience.class, BasicStorage.create( IntNBT.class ), PerkExperience::new );
-        instance.register( PerkStorage.class, BasicStorage.create( ListNBT.class ), PerkStorage::new );
     }
 }

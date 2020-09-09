@@ -24,15 +24,22 @@
 
 package net.eidee.minecraft.perks.network.message;
 
+import java.util.Optional;
+import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import mcp.MethodsReturnNonnullByDefault;
+import net.eidee.minecraft.perks.perk.Perk;
+import net.eidee.minecraft.perks.perk.PerkManager;
+import net.eidee.minecraft.perks.registry.PerkRegistry;
 
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class PerkControl
+public abstract class PerkControl
 {
     private final String perkId;
 
@@ -46,31 +53,23 @@ public class PerkControl
         return perkId;
     }
 
-    public static class UnlockPerk
-        extends PerkControl
+    static String getPerkId( Perk perk )
     {
-        public UnlockPerk( String perkId )
-        {
-            super( perkId );
-        }
-
-        public static void encode( UnlockPerk message, PacketBuffer buffer )
-        {
-            buffer.writeString( message.getPerkId() );
-        }
-
-        public static UnlockPerk decode( PacketBuffer buffer )
-        {
-            return new UnlockPerk( buffer.readString() );
-        }
+        ResourceLocation registryName = perk.getRegistryName();
+        return registryName != null ? registryName.toString() : "";
     }
 
     public static class LearningNextRank
         extends PerkControl
     {
-        public LearningNextRank( String perkId )
+        private LearningNextRank( String perkId )
         {
             super( perkId );
+        }
+
+        public LearningNextRank( Perk perk )
+        {
+            this( getPerkId( perk ) );
         }
 
         public static void encode( LearningNextRank message, PacketBuffer buffer )
@@ -82,6 +81,19 @@ public class PerkControl
         {
             return new LearningNextRank( buffer.readString() );
         }
+
+        public static void handle( LearningNextRank message, Supplier< NetworkEvent.Context > contextSupplier )
+        {
+            NetworkEvent.Context context = contextSupplier.get();
+            context.enqueueWork( () -> {
+                PerkRegistry.getValue( message.getPerkId() ).ifPresent( perk -> {
+                    Optional.ofNullable( context.getSender() ).ifPresent( player -> {
+                        PerkManager.createController( player, perk ).learningNextRank( false );
+                    } );
+                } );
+            } );
+            context.setPacketHandled( true );
+        }
     }
 
     public static class ChangeRank
@@ -89,10 +101,15 @@ public class PerkControl
     {
         private final int newRank;
 
-        public ChangeRank( String perkId, int newRank )
+        private ChangeRank( String perkId, int newRank )
         {
             super( perkId );
             this.newRank = newRank;
+        }
+
+        public ChangeRank( Perk perk, int newRank )
+        {
+            this( getPerkId( perk ), newRank );
         }
 
         public final int getNewRank()
@@ -110,6 +127,19 @@ public class PerkControl
         {
             return new ChangeRank( buffer.readString(), buffer.readInt() );
         }
+
+        public static void handle( ChangeRank message, Supplier< NetworkEvent.Context > contextSupplier )
+        {
+            NetworkEvent.Context context = contextSupplier.get();
+            context.enqueueWork( () -> {
+                PerkRegistry.getValue( message.getPerkId() ).ifPresent( perk -> {
+                    Optional.ofNullable( context.getSender() ).ifPresent( player -> {
+                        PerkManager.createController( player, perk ).updateRank( message.getNewRank(), false );
+                    } );
+                } );
+            } );
+            context.setPacketHandled( true );
+        }
     }
 
     public static class SetPerkEnable
@@ -117,10 +147,15 @@ public class PerkControl
     {
         private final boolean enable;
 
-        public SetPerkEnable( String perkId, boolean enable )
+        private SetPerkEnable( String perkId, boolean enable )
         {
             super( perkId );
             this.enable = enable;
+        }
+
+        public SetPerkEnable( Perk perk, boolean enable )
+        {
+            this( getPerkId( perk ), enable );
         }
 
         public final boolean isEnable()
@@ -138,24 +173,18 @@ public class PerkControl
         {
             return new SetPerkEnable( buffer.readString(), buffer.readBoolean() );
         }
-    }
 
-    public static class RemovePerk
-        extends PerkControl
-    {
-        public RemovePerk( String perkId )
+        public static void handle( SetPerkEnable message, Supplier< NetworkEvent.Context > contextSupplier )
         {
-            super( perkId );
-        }
-
-        public static void encode( RemovePerk message, PacketBuffer buffer )
-        {
-            buffer.writeString( message.getPerkId() );
-        }
-
-        public static RemovePerk decode( PacketBuffer buffer )
-        {
-            return new RemovePerk( buffer.readString() );
+            NetworkEvent.Context context = contextSupplier.get();
+            context.enqueueWork( () -> {
+                PerkRegistry.getValue( message.getPerkId() ).ifPresent( perk -> {
+                    Optional.ofNullable( context.getSender() ).ifPresent( player -> {
+                        PerkManager.createController( player, perk ).updateEnabled( message.isEnable(), false );
+                    } );
+                } );
+            } );
+            context.setPacketHandled( true );
         }
     }
 }

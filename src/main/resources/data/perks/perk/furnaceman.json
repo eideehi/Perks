@@ -1,0 +1,16 @@
+{
+  "available": true,
+  "hidden": false,
+  "rarity": "COMMON",
+  "_comment": "Do not change rankPolicy",
+  "rankPolicy": "MORE_POWER",
+  "_comment": "Do not change maxRank",
+  "maxRank": "3",
+  "learningCosts": [
+    1200, 3600, 10800
+  ],
+  "usageCosts": [
+    1.5, 1.5, 1.5
+  ],
+  "learningDifficulty": 1024
+}

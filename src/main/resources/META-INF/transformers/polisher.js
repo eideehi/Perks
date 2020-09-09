@@ -36,7 +36,7 @@ function initializeCoreMod()
     var setEnchantments = ASMAPI.mapMethod( "func_82782_a" );
 
     return {
-        "Polisher_01": {
+        "perks:GrindstoneContainer$4.onTake": {
             "target": {
                 "type": "METHOD",
                 "class": "net.minecraft.inventory.container.GrindstoneContainer$4",
@@ -47,11 +47,12 @@ function initializeCoreMod()
             {
                 /*
                 |   public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack) {
-                | +     net.eidee.minecraft.perks.hooks.asm.PolisherAsmHooks.grindstoneOnTake(thePlayer);
-                | +     if (!net.eidee.minecraft.perks.hooks.asm.PolisherAsmHooks.usePerk(thePlayer, stack))
-                |       p_i50081_3_.consume((p_216944_1_, p_216944_2_) -> {
-                |       int l = this.func_216942_a(p_216944_1_);
+                | +     net.eidee.minecraft.perks.asm.PolisherHooks.grindstoneOnTake(thePlayer);
+                | +     if (!net.eidee.minecraft.perks.asm.PolisherHooks.usePerk(thePlayer, stack))
+                |       worldPosCallableIn.consume((p_216944_1_, p_216944_2_) -> {
+                |           int l = this.getEnchantmentXpFromInputs(p_216944_1_);
                 |       ...
+                |           p_216944_1_.playEvent(1042, p_216944_2_, 0);
                 |       });
                 | +     }
                 |       GrindstoneContainer.this.field_217014_d.setInventorySlotContents(0, ItemStack.EMPTY);
@@ -99,7 +100,7 @@ function initializeCoreMod()
                             new VarInsnNode( Opcodes.ALOAD, 2 ),
                             new MethodInsnNode(
                                 Opcodes.INVOKESTATIC,
-                                "net/eidee/minecraft/perks/hooks/asm/PolisherAsmHooks",
+                                "net/eidee/minecraft/perks/asm/PolisherHooks",
                                 "usePerk",
                                 "(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/item/ItemStack;)Z",
                                 false
@@ -116,7 +117,7 @@ function initializeCoreMod()
                     new VarInsnNode( Opcodes.ALOAD, 1 ),
                     new MethodInsnNode(
                         Opcodes.INVOKESTATIC,
-                        "net/eidee/minecraft/perks/hooks/asm/PolisherAsmHooks",
+                        "net/eidee/minecraft/perks/asm/PolisherHooks",
                         "grindstoneOnTake",
                         "(Lnet/minecraft/entity/player/PlayerEntity;)V",
                         false
@@ -125,7 +126,7 @@ function initializeCoreMod()
                 return methodNode;
             }
         },
-        "Polisher_02": {
+        "perks:GrindstoneContainer": {
             "target": {
                 "type": "CLASS",
                 "name": "net.minecraft.inventory.container.GrindstoneContainer"
@@ -141,7 +142,7 @@ function initializeCoreMod()
                 return classNode;
             }
         },
-        "Polisher_03": {
+        "perks:GrindstoneContainer<init>": {
             "target": {
                 "type": "METHOD",
                 "class": "net.minecraft.inventory.container.GrindstoneContainer",
@@ -151,10 +152,10 @@ function initializeCoreMod()
             "transformer": function ( methodNode )
             {
                 /*
-                |   public GrindstoneContainer(int p_i50081_1_, PlayerInventory p_i50081_2_, final IWorldPosCallable p_i50081_3_) {
+                |   public GrindstoneContainer(int windowIdIn, PlayerInventory p_i50081_2_, final IWorldPosCallable worldPosCallableIn) {
                 |       ...
                 |       }
-                | -
+                |
                 | +     this.playerInventory = p_i50081_2_;
                 |   }
                  */
@@ -182,7 +183,7 @@ function initializeCoreMod()
                 return methodNode;
             }
         },
-        "Polisher_04": {
+        "perks:GrindstoneContainer.removeEnchantments": {
             "target": {
                 "type": "METHOD",
                 "class": "net.minecraft.inventory.container.GrindstoneContainer",
@@ -192,12 +193,12 @@ function initializeCoreMod()
             "transformer": function ( methodNode )
             {
                 /*
-                |   private ItemStack func_217007_a(ItemStack p_217007_1_, int p_217007_2_, int p_217007_3_) {
-                |       ...
-                |       Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(p_217007_1_).entrySet().stream().filter((p_217012_0_) -> {
-                |           return p_217012_0_.getKey().isCurse();
+                |   private ItemStack removeEnchantments(ItemStack stack, int damage, int count) {
+                |      ...
+                |       Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(stack).entrySet().stream().filter((p_217012_0_) -> {
+                |          return p_217012_0_.getKey().isCurse();
                 |       }).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-                | +     map = net.eidee.minecraft.perks.hooks.asm.PolisherAsmHooks.getEnchantments(this.playerInventory, p_217007_1_, map);
+                | +     map = net.eidee.minecraft.perks.asm.PolisherHooks.getEnchantments(this.playerInventory, stack, map);
                 |       EnchantmentHelper.setEnchantments(map, itemstack);
                 |       itemstack.setRepairCost(0);
                 |       ...
@@ -237,7 +238,7 @@ function initializeCoreMod()
                         new VarInsnNode( Opcodes.ALOAD, 5 ),
                         new MethodInsnNode(
                             Opcodes.INVOKESTATIC,
-                            "net/eidee/minecraft/perks/hooks/asm/PolisherAsmHooks",
+                            "net/eidee/minecraft/perks/asm/PolisherHooks",
                             "getEnchantments",
                             "(Lnet/minecraft/entity/player/PlayerInventory;Lnet/minecraft/item/ItemStack;Ljava/util/Map;)Ljava/util/Map;",
                             false

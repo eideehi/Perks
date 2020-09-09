@@ -24,100 +24,33 @@
 
 package net.eidee.minecraft.perks.network;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import mcp.MethodsReturnNonnullByDefault;
-import net.eidee.minecraft.perks.PerksMod;
-import net.eidee.minecraft.perks.network.handler.PerkControlHandler;
-import net.eidee.minecraft.perks.network.handler.SyncHandler;
-import net.eidee.minecraft.perks.network.message.PerkControl;
-import net.eidee.minecraft.perks.network.message.Sync;
+import static net.eidee.minecraft.perks.PerksMod.MOD_ID;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-@Mod.EventBusSubscriber( modid = PerksMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD )
 public class Networks
 {
-    private static final ResourceLocation CHANNEL_NAME;
-
     private static final String PROTOCOL_VERSION;
+    private static final SimpleChannel CHANNEL;
 
     static
     {
-        CHANNEL_NAME = new ResourceLocation( PerksMod.MOD_ID, "network/simple" );
-        PROTOCOL_VERSION = "1";
+        ResourceLocation channelName = new ResourceLocation( MOD_ID, "perks" );
+        PROTOCOL_VERSION = "2";
+        CHANNEL = NetworkRegistry.newSimpleChannel( channelName,
+                                                    () -> PROTOCOL_VERSION,
+                                                    PROTOCOL_VERSION::equals,
+                                                    PROTOCOL_VERSION::equals );
     }
-
-    public static SimpleChannel CHANNEL;
 
     private Networks()
     {
     }
 
-    @SubscribeEvent
-    public static void setupCommon( FMLCommonSetupEvent event )
+    public static SimpleChannel getChannel()
     {
-        CHANNEL = NetworkRegistry.newSimpleChannel( CHANNEL_NAME,
-                                                    () -> PROTOCOL_VERSION,
-                                                    PROTOCOL_VERSION::equals,
-                                                    PROTOCOL_VERSION::equals );
-
-        AtomicInteger id = new AtomicInteger( 0 );
-
-        CHANNEL.registerMessage( id.getAndIncrement(),
-                                 Sync.PerkEnergy.class,
-                                 Sync.PerkEnergy::encode,
-                                 Sync.PerkEnergy::decode,
-                                 SyncHandler::handle );
-
-        CHANNEL.registerMessage( id.getAndIncrement(),
-                                 Sync.PerkExperience.class,
-                                 Sync.PerkExperience::encode,
-                                 Sync.PerkExperience::decode,
-                                 SyncHandler::handle );
-
-        CHANNEL.registerMessage( id.getAndIncrement(),
-                                 Sync.PerkStorage.class,
-                                 Sync.PerkStorage::encode,
-                                 Sync.PerkStorage::decode,
-                                 SyncHandler::handle );
-
-        CHANNEL.registerMessage( id.getAndIncrement(),
-                                 PerkControl.UnlockPerk.class,
-                                 PerkControl.UnlockPerk::encode,
-                                 PerkControl.UnlockPerk::decode,
-                                 PerkControlHandler::handle );
-
-        CHANNEL.registerMessage( id.getAndIncrement(),
-                                 PerkControl.LearningNextRank.class,
-                                 PerkControl.LearningNextRank::encode,
-                                 PerkControl.LearningNextRank::decode,
-                                 PerkControlHandler::handle );
-
-        CHANNEL.registerMessage( id.getAndIncrement(),
-                                 PerkControl.ChangeRank.class,
-                                 PerkControl.ChangeRank::encode,
-                                 PerkControl.ChangeRank::decode,
-                                 PerkControlHandler::handle );
-
-        CHANNEL.registerMessage( id.getAndIncrement(),
-                                 PerkControl.SetPerkEnable.class,
-                                 PerkControl.SetPerkEnable::encode,
-                                 PerkControl.SetPerkEnable::decode,
-                                 PerkControlHandler::handle );
-
-        CHANNEL.registerMessage( id.getAndIncrement(),
-                                 PerkControl.RemovePerk.class,
-                                 PerkControl.RemovePerk::encode,
-                                 PerkControl.RemovePerk::decode,
-                                 PerkControlHandler::handle );
+        return CHANNEL;
     }
 }

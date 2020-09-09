@@ -1,0 +1,17 @@
+{
+  "available": true,
+  "hidden": false,
+  "rarity": "RARE",
+  "_comment": "Do not change rankPolicy",
+  "rankPolicy": "MORE_POWER",
+  "_comment": "Do not change maxRank",
+  "maxRank": "3",
+  "learningCosts": [
+    1000, 3000, 9000
+  ],
+  "_comment": "This Perk cannot change usageCosts.",
+  "usageCosts": [
+    0, 0, 0
+  ],
+  "learningDifficulty": -1
+}

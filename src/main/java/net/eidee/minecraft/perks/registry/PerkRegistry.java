@@ -43,6 +43,10 @@ public class PerkRegistry
 {
     private static IForgeRegistry< Perk > registry;
 
+    private PerkRegistry()
+    {
+    }
+
     public static void init()
     {
         RegistryBuilder< Perk > builder = new RegistryBuilder<>();

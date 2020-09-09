@@ -9,22 +9,22 @@ Add various Perks to Minecraft. Perk is unlocked by various actions and can be l
 
 
 ## Perk ##
-**To learn Perk, operate from the dedicated GUI displayed with the "P" key.**
+**To learn Perk, operate from the dedicated GUI displayed with the "P" key. If you want to see the GUI tooltip, you can press the Shift key.**
 
 |Perk|Description|Unlock Condition|
 |----|-----------|----------------|
-|Breeder|If you have animal feed in your hand, it will automatically breeding grow-up animals within range.|<details>Breeding 512 grow-up animals.</details>|
-|Cultivator|If you have a hoe in your hand, you will cultivate the land automatically.|<details>Cultivate 512 blocks.</details>|
-|Feeder|If you have animal feed in your hand, it will automatically feeding child animals within range.|<details>Feeding 512 child animals.</details>|
-|Furnaceman|Refining speed increases when around Furnace.|<details>Smelting 1024 items.</details>|
-|Harvester|If harvestable crops except pumpkin and watermelon are with, they are automatically harvested.|<details>Harvest 512 crops.</details>|
-|Intelligence|Reduces Perk usage costs|<details>Crafting 128 bookshelves.</details>|
-|Iron Fist|Blocks can be destroyed efficiently with bare hands.|<details>Destroy 256 blocks without equipping tools.</details>|
-|Obsidian Breaker|Obsidian destruction speed is increased.|<details>Destroy 128 obsidian.</details>|
-|Polisher|When polished equipment with Grindstone, the finished product will retain its enchantment.|<details>Polish 512 times with Grindstone.</details>|
-|Resident of End|Disables disadvantages related to End items.|<details>Stay 72,000 ticks at The End.</details>|
-|Seeder|If you have seeds or crops in your hands that you can plant, except pumpkins and watermelons, you can plant them automatically on the farmland.|<details>Plant 512 seeds or crops.</details>|
-|Spreader|If you have bone meal in your hand, it will be automatically used for crop.|<details>Use 512 bone meals.</details>|
+|Breeder|When you feed an adult animal, it automatically feeds the surrounding animals as well.|<details>Breeding 512 grow-up animals.</details>|
+|Cultivator|When you use the Hoe to plow the ground, it automatically plows the ground around you as well.|<details>Cultivate 512 blocks.</details>|
+|Feeder|When you feed a child's animal, it automatically feeds the child's animals around it.|<details>Feeding 512 child animals.</details>|
+|Furnaceman|The refining speed of the nearby Furnace will be increased.|<details>Smelting 1024 items.</details>|
+|Harvester|When the crop is harvested, it automatically harvests the surrounding crop.|<details>Harvest 512 crops.</details>|
+|Intelligence|The cost of using Perk is reduced.|<details>Crafting 128 bookshelves.</details>|
+|Iron Fist|When destroying blocks with your bare hands, you will be able to destroy them at the same speed as a steel tool.|<details>Destroy 256 blocks without equipping tools.</details>|
+|Obsidian Breaker|The speed of obsidian destruction increases.|<details>Destroy 128 obsidian.</details>|
+|Polisher|When using Grindstone to repair equipment, you will be able to do so without losing Enchantment.|<details>Polish 512 times with Grindstone.</details>|
+|Resident of End|You can nullify the negative effects on items in The End.|<details>Stay 72,000 ticks at The End.</details>|
+|Seeder|When you plant a seed or crop, it automatically plants around it.|<details>Plant 512 seeds or crops.</details>|
+|Spreader|When bone meal is used, it automatically uses bone meal on surrounding crops.|<details>Use 512 bone meals.</details>|
 
 
 ## Perk Energy (PE) ##
@@ -44,7 +44,7 @@ Recover 200 Perk Energy.
 <img src="https://app.box.com/shared/static/rontsnhtei115vkg5j2fnotpnszxu0qi.png">
 
 ### Energy Drink Blue ###
-Increases the base point of Perk Energy by 5, the increased value is lost when the player dies.
+Increases the maximum value of Perk Energy by 5 points. This effect will disappear after 30 minutes or when the player dies.
 
 <img src="https://app.box.com/shared/static/lzeyjf997l6h0jp4zwtp49x5fvnobs2a.png">
 
@@ -54,20 +54,24 @@ In Perks Mod, some commands are added to verify operation in Creative mode.
 
 |Name|Description|Command|
 |----|-----------|-------|
-|Unlock Perk|Instantly unlock Perk.|`/unlockPerk <target> <perk>`|
-|Perk Experience|It is possible to add and set park experience points.|`/perkExperience <query> <target> <value>`|
-|Remove Perk|You can reset the state of Perk.|`/removePerk <target> <perk>`|
+|Perk|Comprehensive Perk operations.|`/perk <query> <target> <value>`|
 
+#### Examples ####
+
+- `/perk experience add EideeHi 100`
+- `/perk experience set EideeHi 0`
+- `/perk unlock EideeHi perks:breeder`
+- `/perk remove EideeHi perks:cultivaor`
 
 ## Config ##
 
 ### Client ###
 Path: **.minecraft/config/perks-client.toml**
+
 |Item|Description|
 |----|-----------|
 |perkEnergyUiX|Perk Energy UI display position X|
 |perkEnergyUiY|Perk Energy UI display position Y|
-
 
 
 ## Languages ##

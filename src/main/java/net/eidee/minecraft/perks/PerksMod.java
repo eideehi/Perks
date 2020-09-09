@@ -29,11 +29,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import mcp.MethodsReturnNonnullByDefault;
-import net.eidee.minecraft.perks.settings.PerksConfig;
+import net.eidee.minecraft.perks.init.CapabilityInitializer;
+import net.eidee.minecraft.perks.init.CommandInitializer;
+import net.eidee.minecraft.perks.init.NetworkInitializer;
+import net.eidee.minecraft.perks.registry.PerkExtraDataRegistry;
+import net.eidee.minecraft.perks.settings.Config;
+import net.eidee.minecraft.perks.settings.KeyBindings;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -46,11 +58,37 @@ public class PerksMod
 
     public PerksMod()
     {
-        ModLoadingContext.get().registerConfig( ModConfig.Type.CLIENT, PerksConfig.CLIENT_SPEC );
+        FMLJavaModLoadingContext.get().getModEventBus().addListener( this::setup );
+        FMLJavaModLoadingContext.get().getModEventBus().addListener( this::clientSetup );
+        FMLJavaModLoadingContext.get().getModEventBus().addListener( this::loadComplete );
+        MinecraftForge.EVENT_BUS.addListener( this::serverAboutToStart );
+        ModLoadingContext.get().registerConfig( ModConfig.Type.CLIENT, Config.CLIENT_SPEC );
     }
 
     public static Logger getLogger()
     {
         return LOGGER;
+    }
+
+    private void setup( FMLCommonSetupEvent event )
+    {
+        CapabilityInitializer.registerCapability();
+        NetworkInitializer.registerMessage();
+        PerkExtraDataRegistry.registerPerkExtraData();
+    }
+
+    private void clientSetup( FMLClientSetupEvent event )
+    {
+        KeyBindings.getAll().forEach( ClientRegistry::registerKeyBinding );
+    }
+
+    private void loadComplete( FMLLoadCompleteEvent event )
+    {
+        PerkExtraDataRegistry.lock();
+    }
+
+    private void serverAboutToStart( FMLServerAboutToStartEvent event )
+    {
+        CommandInitializer.registerCommand( event.getServer().getCommandManager().getDispatcher() );
     }
 }

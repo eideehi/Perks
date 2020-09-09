@@ -24,48 +24,40 @@
 
 package net.eidee.minecraft.perks.settings;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import mcp.MethodsReturnNonnullByDefault;
-import net.eidee.minecraft.perks.PerksMod;
+import com.google.common.collect.Lists;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-@OnlyIn( Dist.CLIENT )
-@Mod.EventBusSubscriber( value = { Dist.CLIENT }, modid = PerksMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD )
 public class KeyBindings
 {
-    public static KeyBinding OPEN_PERK_GUI;
+    private static final List< KeyBinding > keyBindings;
 
-    private KeyBindings()
-    {
-    }
+    public static final KeyBinding OPEN_PERK_GUI;
 
-    @SubscribeEvent
-    public static void setupClient( FMLClientSetupEvent event )
+    static
     {
-        List< KeyBinding > keyBindings = new ArrayList<>();
+        List< KeyBinding > list = Lists.newArrayList();
 
         OPEN_PERK_GUI = new KeyBinding( "key.perks.open_perk_gui",
                                         KeyConflictContext.IN_GAME,
                                         InputMappings.getInputByName( "key.keyboard.p" ),
                                         "key.perks" );
 
-        Collections.addAll( keyBindings, OPEN_PERK_GUI );
-        keyBindings.forEach( ClientRegistry::registerKeyBinding );
+        Collections.addAll( list, OPEN_PERK_GUI );
+        keyBindings = Collections.unmodifiableList( list );
+    }
+
+    private KeyBindings()
+    {
+    }
+
+    public static List< KeyBinding > getAll()
+    {
+        return keyBindings;
     }
 }

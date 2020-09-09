@@ -26,14 +26,15 @@ package net.eidee.minecraft.perks.gui.toasts;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mcp.MethodsReturnNonnullByDefault;
 import net.eidee.minecraft.perks.perk.Perk;
+import net.eidee.minecraft.perks.util.Message;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.toasts.IToast;
 import net.minecraft.client.gui.toasts.ToastGui;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -53,7 +54,7 @@ public class PerkUnlockToast
     }
 
     @Override
-    public Visibility draw( ToastGui toastGui, long delta )
+    public Visibility func_230444_a_( MatrixStack matrixStack, ToastGui toastGui, long delta )
     {
         if ( newDisplay )
         {
@@ -64,9 +65,17 @@ public class PerkUnlockToast
         Minecraft minecraft = toastGui.getMinecraft();
         minecraft.getTextureManager().bindTexture( TEXTURE_TOASTS );
         RenderSystem.color3f( 1.0F, 1.0F, 1.0F );
-        toastGui.blit( 0, 0, 0, 64, 160, 32 );
-        minecraft.fontRenderer.drawString( I18n.format( "gui.perks.toast.unlock.text" ), 30.0F, 7.0F, 0xFFFFFFFF );
-        minecraft.fontRenderer.drawString( I18n.format( perkTranslationKey ), 30.0F, 18.0F, 0xFFFFFFFF );
+        toastGui.blit( matrixStack, 0, 0, 0, 64, 160, 32 );
+        minecraft.fontRenderer.drawString( matrixStack,
+                                           Message.format( "gui.perks.toast.unlock.text" ),
+                                           30.0F,
+                                           7.0F,
+                                           0xFFFFFFFF );
+        minecraft.fontRenderer.drawString( matrixStack,
+                                           Message.format( perkTranslationKey ),
+                                           30.0F,
+                                           18.0F,
+                                           0xFFFFFFFF );
 
         return delta - firstDrawTime < 5000L ? IToast.Visibility.SHOW : IToast.Visibility.HIDE;
     }

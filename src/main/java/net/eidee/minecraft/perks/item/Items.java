@@ -36,4 +36,8 @@ public class Items
 
     @ObjectHolder( RegistryNames.ITEM_ENERGY_DRINK_BLUE )
     public static Item ENERGY_DRINK_BLUE;
+
+    private Items()
+    {
+    }
 }

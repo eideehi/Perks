@@ -27,7 +27,6 @@ package net.eidee.minecraft.perks.command.arguments;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.mojang.brigadier.StringReader;
@@ -40,11 +39,11 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import mcp.MethodsReturnNonnullByDefault;
 import net.eidee.minecraft.perks.perk.Perk;
 import net.eidee.minecraft.perks.registry.PerkRegistry;
+import net.eidee.minecraft.perks.util.Message;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -53,8 +52,8 @@ public class PerkArgument
 {
     private static final Collection< String > EXAMPLES = Arrays.asList( "perks:economy", "perks:intelligence" );
 
-    public static final DynamicCommandExceptionType PERK_UNKNOWN = new DynamicCommandExceptionType( ( p_208662_0_ ) -> {
-        return new TranslationTextComponent( "commands.perks.unknown", p_208662_0_ );
+    public static final DynamicCommandExceptionType PERK_UNKNOWN = new DynamicCommandExceptionType( args -> {
+        return Message.of( "commands.perks.unknown", args );
     } );
 
     public static PerkArgument perk()

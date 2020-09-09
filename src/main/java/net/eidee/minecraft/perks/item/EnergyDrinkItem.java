@@ -38,6 +38,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.UseAction;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.DrinkHelper;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
@@ -72,56 +73,55 @@ public class EnergyDrinkItem
     }
 
     @Override
-    public ItemStack onItemUseFinish( ItemStack p_77654_1_, World p_77654_2_, LivingEntity p_77654_3_ )
+    public ItemStack onItemUseFinish( ItemStack stack, World worldIn, LivingEntity entityLiving )
     {
-        if ( p_77654_3_ instanceof PlayerEntity )
+        if ( entityLiving instanceof PlayerEntity )
         {
-            PlayerEntity player = ( PlayerEntity )p_77654_3_;
+            PlayerEntity player = ( PlayerEntity )entityLiving;
             if ( player instanceof ServerPlayerEntity )
             {
-                CriteriaTriggers.CONSUME_ITEM.trigger( ( ServerPlayerEntity )player, p_77654_1_ );
+                CriteriaTriggers.CONSUME_ITEM.trigger( ( ServerPlayerEntity )player, stack );
             }
 
             if ( type == Type.RECOVER )
             {
-                PerkManager.of( player ).recoverPerkEnergy( value );
+                PerkManager.get( player ).recoverEnergy( value );
             }
             else
             {
-                PerkManager.of( player ).addPerkEnergyBase( false, value );
+                PerkManager.get( player ).boostEnergy( getTranslationKey(), value, true, 36000 );
             }
 
             player.addStat( Stats.ITEM_USED.get( this ) );
             if ( !player.abilities.isCreativeMode )
             {
-                p_77654_1_.shrink( 1 );
+                stack.shrink( 1 );
             }
         }
-        return p_77654_1_;
+        return stack;
     }
 
     @Override
-    public int getUseDuration( ItemStack p_77626_1_ )
+    public int getUseDuration( ItemStack stack )
     {
         return 32;
     }
 
     @Override
-    public UseAction getUseAction( ItemStack p_77661_1_ )
+    public UseAction getUseAction( ItemStack stack )
     {
         return UseAction.DRINK;
     }
 
     @Override
-    public ActionResult< ItemStack > onItemRightClick( World p_77659_1_, PlayerEntity p_77659_2_, Hand p_77659_3_ )
+    public ActionResult< ItemStack > onItemRightClick( World worldIn, PlayerEntity playerIn, Hand handIn )
     {
-        p_77659_2_.setActiveHand( p_77659_3_ );
-        return ActionResult.func_226248_a_( p_77659_2_.getHeldItem( p_77659_3_ ) );
+        return DrinkHelper.func_234707_a_( worldIn, playerIn, handIn );
     }
 
     public enum Type
     {
         RECOVER,
-        BASE_UP
+        BOOST
     }
 }

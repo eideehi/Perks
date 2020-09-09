@@ -28,35 +28,35 @@ import static net.eidee.minecraft.perks.PerksMod.MOD_ID;
 
 public class RegistryNames
 {
-    public static final String PERK_ECONOMY = ( MOD_ID + ":economy" );
+    public static final String PERK_ECONOMY = ( MOD_ID + ':' + "economy" );
 
-    public static final String PERK_INTELLIGENCE = ( MOD_ID + ":intelligence" );
+    public static final String PERK_INTELLIGENCE = ( MOD_ID + ':' + "intelligence" );
 
-    public static final String PERK_IRON_FIST = ( MOD_ID + ":iron_fist" );
+    public static final String PERK_IRON_FIST = ( MOD_ID + ':' + "iron_fist" );
 
-    public static final String PERK_CULTIVATOR = ( MOD_ID + ":cultivator" );
+    public static final String PERK_CULTIVATOR = ( MOD_ID + ':' + "cultivator" );
 
-    public static final String PERK_SEEDER = ( MOD_ID + ":seeder" );
+    public static final String PERK_SEEDER = ( MOD_ID + ':' + "seeder" );
 
-    public static final String PERK_SPREADER = ( MOD_ID + ":spreader" );
+    public static final String PERK_SPREADER = ( MOD_ID + ':' + "spreader" );
 
-    public static final String PERK_HARVESTER = ( MOD_ID + ":harvester" );
+    public static final String PERK_HARVESTER = ( MOD_ID + ':' + "harvester" );
 
-    public static final String PERK_FURNACEMAN = ( MOD_ID + ":furnaceman" );
+    public static final String PERK_FURNACEMAN = ( MOD_ID + ':' + "furnaceman" );
 
-    public static final String PERK_RESIDENT_OF_END = ( MOD_ID + ":resident_of_end" );
+    public static final String PERK_RESIDENT_OF_END = ( MOD_ID + ':' + "resident_of_end" );
 
-    public static final String PERK_BREEDER = ( MOD_ID + ":breeder" );
+    public static final String PERK_BREEDER = ( MOD_ID + ':' + "breeder" );
 
-    public static final String PERK_FEEDER = ( MOD_ID + ":feeder" );
+    public static final String PERK_FEEDER = ( MOD_ID + ':' + "feeder" );
 
-    public static final String PERK_OBSIDIAN_BREAKER = ( MOD_ID + ":obsidian_breaker" );
+    public static final String PERK_OBSIDIAN_BREAKER = ( MOD_ID + ':' + "obsidian_breaker" );
 
-    public static final String PERK_POLISHER = ( MOD_ID + ":polisher" );
+    public static final String PERK_POLISHER = ( MOD_ID + ':' + "polisher" );
 
-    public static final String ITEM_ENERGY_DRINK = ( MOD_ID + ":energy_drink" );
+    public static final String ITEM_ENERGY_DRINK = ( MOD_ID + ':' + "energy_drink" );
 
-    public static final String ITEM_ENERGY_DRINK_BLUE = ( MOD_ID + ":energy_drink_blue" );
+    public static final String ITEM_ENERGY_DRINK_BLUE = ( MOD_ID + ':' + "energy_drink_blue" );
 
     private RegistryNames()
     {

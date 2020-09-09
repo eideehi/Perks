@@ -32,7 +32,7 @@ import mcp.MethodsReturnNonnullByDefault;
 
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -76,17 +76,21 @@ outer_loop:
         return result;
     }
 
-    public static void spawnAsEntityNoPickupDelay( World world, Vec3d pos, ItemStack stack )
+    public static void spawnAsEntityNoPickupDelay( World world, Vector3d pos, ItemStack stack )
     {
         if ( !world.isRemote() &&
              !stack.isEmpty() &&
              world.getGameRules().getBoolean( GameRules.DO_TILE_DROPS ) &&
              !world.restoringBlockSnapshots )
         {
-            double d0 = ( double )( world.rand.nextFloat() * 0.5F ) + 0.25D;
-            double d1 = ( double )( world.rand.nextFloat() * 0.5F ) + 0.25D;
-            double d2 = ( double )( world.rand.nextFloat() * 0.5F ) + 0.25D;
-            ItemEntity itementity = new ItemEntity( world, pos.getX() + d0, pos.getY() + d1, pos.getZ() + d2, stack );
+            double offsetX = ( world.rand.nextFloat() * 0.5F ) + 0.25D;
+            double offsetY = ( world.rand.nextFloat() * 0.5F ) + 0.25D;
+            double offsetZ = ( world.rand.nextFloat() * 0.5F ) + 0.25D;
+            ItemEntity itementity = new ItemEntity( world,
+                                                    pos.getX() + offsetX,
+                                                    pos.getY() + offsetY,
+                                                    pos.getZ() + offsetZ,
+                                                    stack );
             itementity.setPickupDelay( 0 );
             world.addEntity( itementity );
         }

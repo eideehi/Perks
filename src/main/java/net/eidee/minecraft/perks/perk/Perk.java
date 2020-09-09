@@ -33,7 +33,10 @@ import com.google.gson.JsonObject;
 import mcp.MethodsReturnNonnullByDefault;
 import net.eidee.minecraft.perks.registry.PerkRegistry;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 @MethodsReturnNonnullByDefault
@@ -45,7 +48,9 @@ public class Perk
         JsonObject object = json.getAsJsonObject();
 
         boolean available = object.get( "available" ).getAsBoolean();
+        boolean hidden = object.get( "hidden" ).getAsBoolean();
         Rarity rarity = Rarity.valueOf( object.get( "rarity" ).getAsString() );
+        RankPolicy rankPolicy = RankPolicy.valueOf( object.get( "rankPolicy" ).getAsString() );
         int maxRank = object.get( "maxRank" ).getAsInt();
         int[] learningCosts;
         {
@@ -56,42 +61,60 @@ public class Perk
                 learningCosts[ i ] = array.get( i ).getAsInt();
             }
         }
-        int[] usageCosts;
+        double[] usageCosts;
         {
             JsonArray array = object.get( "usageCosts" ).getAsJsonArray();
-            usageCosts = new int[ array.size() ];
+            usageCosts = new double[ array.size() ];
             for ( int i = 0; i < usageCosts.length; i++ )
             {
-                usageCosts[ i ] = array.get( i ).getAsInt();
+                usageCosts[ i ] = array.get( i ).getAsDouble();
             }
         }
         int learningDifficulty = object.get( "learningDifficulty" ).getAsInt();
 
-        return new Perk( available, rarity, maxRank, learningCosts, usageCosts, learningDifficulty );
+        return new Perk( available,
+                         hidden,
+                         rarity,
+                         rankPolicy,
+                         maxRank,
+                         learningCosts,
+                         usageCosts,
+                         learningDifficulty );
     };
 
     private final boolean available;
     private final Rarity rarity;
+    private final boolean hidden;
+    private final RankPolicy rankPolicy;
     private final int maxRank;
     private final int[] learningCosts;
-    private final int[] usageCosts;
+    private final double[] usageCosts;
     private final int learningDifficulty;
 
     protected transient String translationKey;
 
     private Perk( boolean available,
+                  boolean hidden,
                   Rarity rarity,
+                  RankPolicy rankPolicy,
                   int maxRank,
                   int[] learningCosts,
-                  int[] usageCosts,
+                  double[] usageCosts,
                   int learningDifficulty )
     {
         this.available = available;
+        this.hidden = hidden;
         this.rarity = rarity;
+        this.rankPolicy = rankPolicy;
         this.maxRank = maxRank;
         this.learningCosts = learningCosts;
         this.usageCosts = usageCosts;
         this.learningDifficulty = learningDifficulty;
+    }
+
+    public static String getPath( ResourceLocation registryName )
+    {
+        return ( "data/" + registryName.getNamespace() + "/perk/" + registryName.getPath() + ".json" );
     }
 
     protected String getTranslationKey()
@@ -109,9 +132,19 @@ public class Perk
         return available;
     }
 
+    public boolean isHidden()
+    {
+        return hidden;
+    }
+
     public Rarity getRarity()
     {
         return rarity;
+    }
+
+    public RankPolicy getRankPolicy()
+    {
+        return rankPolicy;
     }
 
     public int getMaxRank()
@@ -124,17 +157,17 @@ public class Perk
         int index = rank - 1;
         if ( index >= 0 && index < maxRank && index < learningCosts.length )
         {
-            return learningCosts[ rank - 1 ];
+            return learningCosts[ index ];
         }
         return -1;
     }
 
-    public int getUsageCost( int rank )
+    public double getUsageCost( int rank )
     {
         int index = rank - 1;
         if ( index >= 0 && index < maxRank && index < usageCosts.length )
         {
-            return usageCosts[ rank - 1 ];
+            return usageCosts[ index ];
         }
         return -1;
     }
@@ -147,6 +180,11 @@ public class Perk
     public String getName()
     {
         return getTranslationKey();
+    }
+
+    public ITextComponent getDisplayName()
+    {
+        return new TranslationTextComponent( getTranslationKey() );
     }
 
     @Override
@@ -181,5 +219,12 @@ public class Perk
         COMMON,
         RARE,
         LEGENDARY
+    }
+
+    public enum RankPolicy
+    {
+        NONE,
+        MORE_POWER,
+        MORE_SKILL
     }
 }
