@@ -93,7 +93,7 @@ public class PerksScreen
         List< IReorderingProcessor > wrappedLines = Lists.newArrayList();
         for ( ITextComponent line : lines )
         {
-            wrappedLines.addAll( font.func_238425_b_( line, maxWidth ) );
+            wrappedLines.addAll( font.trimStringToWidth( line, maxWidth ) );
         }
 
         return wrappedLines;

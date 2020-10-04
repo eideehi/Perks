@@ -67,7 +67,7 @@ public class ResidentOfEndPerkEventHandler
                 return;
             }
 
-            if ( world.func_234923_W_() == World.field_234920_i_ )
+            if ( world.getDimensionKey() == World.THE_END )
             {
                 controller.addUnlockProgress();
             }

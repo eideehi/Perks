@@ -62,7 +62,7 @@ public class FeederPerkEventHandler
         if ( controller.getReferenceData().isReady() )
         {
             int n = controller.getReferenceData().getRank();
-            AxisAlignedBB aabb = AxisAlignedBB.func_241549_a_( Vector3d.copy( pos ) ).grow( n, 0, n );
+            AxisAlignedBB aabb = AxisAlignedBB.fromVector( Vector3d.copy( pos ) ).grow( n, 0, n );
 
             world.getEntitiesWithinAABB( AnimalEntity.class, aabb ).forEach( animal -> {
                 if ( controller.canUsePerk() &&
